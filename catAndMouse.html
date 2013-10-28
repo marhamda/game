@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Test</title>
+    <style>
+        #playingArea{
+            position: absolute;
+            top: 150px;
+            left: 100px;
+            border: 1px solid black;
+            width: 500px;
+            height: 500px;
+            background:url("background.jpg");
+        }
+        #paddle{
+            position: absolute;
+            top: 470px;
+            left: 228px;
+            width: 64px;
+            height: 16px;
+        }
+         #ball{
+            position: absolute;
+			top: 0px;
+            left: 250px;
+            width: 25px;
+            height: 25px;
+			background-color:blue;
+        }
+		#paddle{
+            position: absolute;
+			top:475px;
+			left:0px;
+            width: 501px;
+            height: 25px;
+			background-color:green;
+        }
+		#object{
+		    position: absolute;
+			top:475px;
+			left:250px;
+            width: 25px;
+            height: 25px;
+			background-color:red;
+        }
+    </style>
+    <script language="JavaScript">
+	var ball;
+	var paddle;
+	var object;
+	var score;
+	var speed;
+	var currentSpeed = 0;
+	var stop = false;
+	var currentScore = 0;
+	var objectLeft = 228;
+	var objectTop = 463;
+	var paddleLeft = 250;
+	var paddleUp = 463;
+	var ballLeft = 200;
+	var ballTop = 10;
+	var timer;
+	var dx = 6;
+	var dy = 6;
+	
+	
+	function init(){
+		ball = document.getElementById('ball');
+		paddle = document.getElementById('paddle');
+		score = document.getElementById('score');
+		object = document.getElementById('object');
+		speed = document.getElementById('speed');
+		
+		document.onkeydown = keyListener;
+		
+		start();
+	}
+	
+	function keyListener(e) {
+		if(!e) {
+		e = window.event
+		}	
+		if(e.keyCode==37 && objectLeft > 0) {
+			objectLeft -= 10;
+			object.style.left =  objectLeft + 'px';
+		}
+		if(e.keyCode==39 && objectLeft < 436) {
+			objectLeft += 10;
+			object.style.left =  objectLeft + 'px';
+		}
+		if(e.keyCode==40 && objectTop < 480) {
+			objectTop+= 10;
+			object.style.top = objectTop + 'px';
+		}
+		if(e.keyCode==38 && objectTop > 0) {
+			objectTop -= 10;
+			object.style.top = objectTop + 'px';
+		}
+	}
+	
+	function start() {
+		detectCollision();
+		changeColor();
+		renders();
+		
+		if (ballTop < 500 && !stop) {
+			timer = setTimeout('start()', 50);//speed
+		}
+		else {
+			gameOver();
+		}
+	}
+	
+	function gameOver() {
+		clearTimeout(timer);
+		document.write("<p>");
+		alert("You win! Your score is " + currentScore + ". Try to reach a lower score next time!");
+	}
+	
+	function updateScore() {
+		currentScore += 5; 
+		score.innerHTML = " Score: " + currentScore;
+	}
+	function changeColor() {
+	if(paddleLeft < ballLeft){
+		paddle.style.background.color = 'rgb(255, 0, 0)';//?
+	}
+}
+	
+	function detectCollision() {
+		if(collisionsX()) 
+			dx = dx * -1;
+		if(collisonY())
+			dy = dy * -1;		
+	}
+	function collisionsX() {
+		if(ballLeft < 4 || ballLeft > 480) {
+			return true;
+	}else{ 
+		return false;
+	}
+	}
+	
+	function collisonY() {
+		if(ballTop < 4) {
+		return true;
+		}
+		if(ballTop > 480) {
+			if(ballLeft != paddleLeft  && ballLeft != paddleLeft) {
+			return true;
+			}else{
+			return false;
+			}
+		}
+	}
+
+	function renders() {
+		if(objectLeft != ballLeft && objectTop + 101!= ballTop) {
+		moveBall();
+		updateScore();
+		}
+		else{
+			stop = true;
+	}
+	}
+		
+	function moveBall() {
+		ballLeft += dx;
+		ballTop += dy;
+		ball.style.left = ballLeft + 'px';
+		ball.style.top = ballTop + 'px';
+	}
+	
+    </script>
+ 
+</head>
+  <body>
+  <h1>Cat and Mouse</h1>
+   <form>
+	<form>Enter speed(1 - 100)<input type="text" id="speed"></form>
+	
+ <input type="submit" value="Submit" onclick="init()"></input> 
+</form> 
+<div id="playingArea">
+    <div id="paddle">
+    </div>
+    <div id="ball">
+    </div>
+    <div id="score">
+        Score: 0
+    </div>
+	<div id="object"
+    </div>
+  </div>
+</body>
+</html>
